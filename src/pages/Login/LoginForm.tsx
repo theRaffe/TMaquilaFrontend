@@ -7,16 +7,22 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 // import Divider from '@mui/material/Divider';
 import FormLabel from '@mui/material/FormLabel';
 import FormControl from '@mui/material/FormControl';
-import Link from '@mui/material/Link';
+// import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
-import { styled } from '@mui/material/styles';
+import { createTheme, styled, ThemeProvider } from '@mui/material/styles';
 import { SignInProps } from './types';
 // import AppTheme from '../shared-theme/AppTheme';
 //import { GoogleIcon, FacebookIcon, SitemarkIcon } from './components/CustomIcons';
 
+
+const darkTheme = createTheme({
+    palette: {
+      mode: 'dark',
+    },
+  });
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
@@ -119,7 +125,7 @@ export default function SignIn(props: { disableCustomTheme?: boolean, submitLogi
   };
 
   return (
-    <>
+    <ThemeProvider theme={darkTheme}>
       <CssBaseline enableColorScheme />
       <SignInContainer direction="column" justifyContent="space-between">
         <Card variant="outlined">
@@ -155,7 +161,7 @@ export default function SignIn(props: { disableCustomTheme?: boolean, submitLogi
                 autoFocus
                 required
                 fullWidth
-                variant="outlined"
+                variant="filled"
                 color={emailError ? 'error' : 'primary'}
               />
             </FormControl>
@@ -172,7 +178,7 @@ export default function SignIn(props: { disableCustomTheme?: boolean, submitLogi
                 autoFocus
                 required
                 fullWidth
-                variant="outlined"
+                variant="filled"
                 color={passwordError ? 'error' : 'primary'}
               />
             </FormControl>
@@ -192,6 +198,6 @@ export default function SignIn(props: { disableCustomTheme?: boolean, submitLogi
           </Box>          
         </Card>
       </SignInContainer>
-    </>
+    </ThemeProvider>
   );
 }
