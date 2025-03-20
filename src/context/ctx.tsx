@@ -5,6 +5,7 @@ import { supabase } from "../lib/supabase";
 import axios from "axios";
 import { Session } from "@supabase/supabase-js";
 import { AuthContext } from "./AuthContext";
+import * as loginService from '../services/LoginService';
 
 
 /**
@@ -68,6 +69,7 @@ export function SessionProvider(props: Props) {
     const updateSession = (session: Session)  => { 
         setSession(session);
         updateAxiosHeader(session.access_token, unAuthorizedCallback);
+        loginService.registerUserAccess();
     };
     return (
         <AuthContext.Provider
@@ -86,6 +88,7 @@ export function SessionProvider(props: Props) {
                         setSession(data.session);    
                         updateAxiosHeader(data.session.access_token, unAuthorizedCallback);
                         setExpiredSession(false);
+                        loginService.registerUserAccess();
                     }        
                     
                     console.log("setting session by signIn:", error);
@@ -105,6 +108,7 @@ export function SessionProvider(props: Props) {
                         setSession(data.session);    
                         updateAxiosHeader(data.session.access_token, unAuthorizedCallback);
                         setExpiredSession(false);
+                        loginService.registerUserAccess();
                     }        
                     
                     console.log("setting session by signIn:", error);
