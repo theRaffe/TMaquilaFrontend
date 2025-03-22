@@ -1,6 +1,6 @@
 export interface ILoadRequest {
   vendorName: string;
-  legData: string;
+  legDate: string;
   deleted: number;
   type: string;
 }

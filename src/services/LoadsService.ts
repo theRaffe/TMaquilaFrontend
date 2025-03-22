@@ -1,16 +1,16 @@
 import axios from "axios";
 import getBaseHostApi from "./baseApiHost";
 import { ILoadRequest } from "@/models/load.request";
+import { INewLoad } from "@/models";
 
+export async function getLoadsPagination(pageIndex: number, pageSize: number) {
+  const host = getBaseHostApi();
+  const { data } = await axios.get<any>(
+    `${host}/api/TMaquila/getLoadsPagination`,
+    { params: { pageIndex, pageSize } }
+  );
 
-export async function getLoadsPagination(pageIndex:number, pageSize:number) {
-    const host = getBaseHostApi()
-    const { data } =  await axios.get<any>(
-        `${host}/api/TMaquila/getLoadsPagination`,
-        { params: { pageIndex, pageSize}}
-    );
-
-    return data;
+  return data;
 }
 
 /**
@@ -18,8 +18,10 @@ export async function getLoadsPagination(pageIndex:number, pageSize:number) {
  * @param request object to create a new load
  */
 export async function postNewLoad(request: ILoadRequest) {
-    const promiseReq  = new Promise<ILoadRequest>((resolve) => resolve(request));
-    const result = await promiseReq;
-
-    return result;
+  const host = getBaseHostApi();
+  const { data } = await axios.post<INewLoad>(
+    `${host}/api/TMaquila/postNewLoad`,
+    request
+  );
+  return data;
 }

@@ -6,8 +6,8 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
-import { styleModal } from "@/constants/styles";
 import { NewLoad } from "../NewLoad";
+import { PostNewLoadResponse } from "@/models";
 
 function Dashboard() {
   interface PaginationState {
@@ -70,6 +70,12 @@ function Dashboard() {
     });
   };
 
+  const onHandleNewLoadEvt = (response: PostNewLoadResponse) => {
+    if (response.success) {
+      setOpen(false);
+    }
+  }
+
   const columns: ColumnConfig[] = [
     {
       width: 30,
@@ -108,7 +114,7 @@ function Dashboard() {
         padding: 8,
       }}
     >
-      <Box sx={{ display: "flex", padding: "1rem" }}>
+      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <TextField
           label="Filter by Vendor"
           variant="outlined"
@@ -123,7 +129,7 @@ function Dashboard() {
           aria-labelledby="parent-modal-title"
           aria-describedby="parent-modal-description"
         >
-          <NewLoad/>
+          <NewLoad handleNewLoadEvt={onHandleNewLoadEvt}/>
         </Modal>
       </Box>
 
