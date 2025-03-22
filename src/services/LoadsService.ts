@@ -1,5 +1,6 @@
 import axios from "axios";
 import getBaseHostApi from "./baseApiHost";
+import { ILoadRequest } from "@/models/load.request";
 
 
 export async function getLoadsPagination(pageIndex:number, pageSize:number) {
@@ -10,4 +11,15 @@ export async function getLoadsPagination(pageIndex:number, pageSize:number) {
     );
 
     return data;
+}
+
+/**
+ * TODO: use real API
+ * @param request object to create a new load
+ */
+export async function postNewLoad(request: ILoadRequest) {
+    const promiseReq  = new Promise<ILoadRequest>((resolve) => resolve(request));
+    const result = await promiseReq;
+
+    return result;
 }

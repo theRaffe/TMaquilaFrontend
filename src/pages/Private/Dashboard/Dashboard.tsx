@@ -4,6 +4,10 @@ import * as loadsService from "@/services/LoadsService";
 import { ColumnConfig } from "@/components/CustomPaginationActionsTable/Column.model";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Modal from "@mui/material/Modal";
+import { styleModal } from "@/constants/styles";
+import { NewLoad } from "../NewLoad";
 
 function Dashboard() {
   interface PaginationState {
@@ -21,6 +25,13 @@ function Dashboard() {
       return items;
     },
   });
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,21 +56,19 @@ function Dashboard() {
   const handleFilterChange = (e) => {
     const target = e.target;
     setFilterFn({
-        fn: items => {
-            if (target.value == "")
-                return items;
-            else {
-              //console.log({value: target.value, items});
-              const valueSearch = target.value.toLowerCase();
-              return items.filter(item => {
-                console.log({item, value: valueSearch});
-                return item.vendorName.toLowerCase().includes(valueSearch);
-              });
-            }
-                
+      fn: (items) => {
+        if (target.value == "") return items;
+        else {
+          //console.log({value: target.value, items});
+          const valueSearch = target.value.toLowerCase();
+          return items.filter((item) => {
+            console.log({ item, value: valueSearch });
+            return item.vendorName.toLowerCase().includes(valueSearch);
+          });
         }
-    })
-}
+      },
+    });
+  };
 
   const columns: ColumnConfig[] = [
     {
@@ -90,14 +99,34 @@ function Dashboard() {
   ];
 
   return (
-    <Box  sx={{ marginBottom: 2, gap: 2, display: 'flex', flexFlow: 'column', padding: 8 }}>
-      <TextField
-        label="Filter by Vendor"
-        variant="outlined"
-        onChange={handleFilterChange}
-        fullWidth
-        sx={{ maxWidth: 400 }}
-      />
+    <Box
+      sx={{
+        marginBottom: 2,
+        gap: 2,
+        display: "flex",
+        flexFlow: "column",
+        padding: 8,
+      }}
+    >
+      <Box sx={{ display: "flex", padding: "1rem" }}>
+        <TextField
+          label="Filter by Vendor"
+          variant="outlined"
+          onChange={handleFilterChange}
+          fullWidth
+          sx={{ maxWidth: 400 }}
+        />
+        <Button onClick={handleOpen}>Add New</Button>
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="parent-modal-title"
+          aria-describedby="parent-modal-description"
+        >
+          <NewLoad/>
+        </Modal>
+      </Box>
+
       <CustomPaginationTable
         rows={dataRows}
         columnData={columns}
