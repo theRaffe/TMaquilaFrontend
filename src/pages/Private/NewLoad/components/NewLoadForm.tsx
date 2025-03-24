@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Box,
   TextField,
@@ -10,27 +10,47 @@ import {
   Checkbox,
   Button,
   Typography,
-} from '@mui/material';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
-import { LoadFormData } from '@/models';
+} from "@mui/material";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
+import { LoadActionEnum, LoadFormData } from "@/models";
 
 interface NewLoadProps {
-  submitHandler: (arg: LoadFormData) => void
+  submitHandler: (arg: LoadFormData) => void;
+  loadAction: LoadActionEnum;
+  loadRequest?: any;
 }
 
-const NewLoadForm = ({submitHandler}: NewLoadProps) => {
+const NewLoadForm = ({
+  submitHandler,
+  loadAction,
+  loadRequest,
+}: NewLoadProps) => {
+  const initalFormData: LoadFormData =
+    loadAction === LoadActionEnum.UPDATE_LOAD
+      ? {
+          ...loadRequest,
+          legDate: new Date(loadRequest.legDate),
+        }
+      : {
+          vendorName: "",
+          type: "",
+          legDate: null,
+          deleted: false,
+        };
   // Form state
-  const [formData, setFormData] = useState<LoadFormData>({
-    vendorName: '',
-    type: '',
-    legDate: null,
-    deleted: false,
-  });
+  const [formData, setFormData] = useState<LoadFormData>(initalFormData);
+
+  const labelHeader =
+    loadAction === LoadActionEnum.NEW_LOAD ? "Create New Load" : "Update Load";
 
   // Handle input changes
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
+  const handleChange = (
+    event: React.ChangeEvent<
+      HTMLInputElement | { name?: string; value: unknown }
+    >
+  ) => {
     const { name, value } = event.target;
     setFormData((prev) => ({
       ...prev,
@@ -59,10 +79,10 @@ const NewLoadForm = ({submitHandler}: NewLoadProps) => {
     event.preventDefault();
     // Basic validation
     if (!formData.vendorName || !formData.type || !formData.legDate) {
-      alert('Please fill in all required fields');
+      alert("Please fill in all required fields");
       return;
     }
-    console.log('Form submitted:', formData);
+    console.log("Form submitted:", formData);
     submitHandler(formData);
     // Add your API call or logic here
   };
@@ -72,18 +92,21 @@ const NewLoadForm = ({submitHandler}: NewLoadProps) => {
       <Box
         sx={{
           maxWidth: 500,
-          margin: 'auto',
+          margin: "auto",
           padding: 3,
-          bgcolor: 'background.paper',
+          bgcolor: "background.paper",
           borderRadius: 1,
           boxShadow: 1,
+          display: "flex",
+          flexDirection: "column",
+          rowGap: "1.5 rem",
         }}
       >
         <Typography variant="h5" gutterBottom align="center">
-          Create New Load
+          {labelHeader}
         </Typography>
         <form onSubmit={handleSubmit}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             {/* Vendor Name */}
             <TextField
               label="Vendor Name"

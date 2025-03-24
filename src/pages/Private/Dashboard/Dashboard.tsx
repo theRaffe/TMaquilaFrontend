@@ -1,15 +1,15 @@
 import { CustomPaginationTable } from "@/components/CustomPaginationActionsTable";
-import { useEffect, useState } from "react";
-import * as loadsService from "@/services/LoadsService";
 import { ColumnConfig } from "@/components/CustomPaginationActionsTable/Column.model";
+import { LoadActionEnum, PostNewLoadResponse } from "@/models";
+import * as loadsService from "@/services/LoadsService";
+import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
-import { NewLoad } from "../NewLoad";
-import { PostNewLoadResponse } from "@/models";
 import Snackbar, { SnackbarOrigin } from "@mui/material/Snackbar";
-import Alert from "@mui/material/Alert";
+import TextField from "@mui/material/TextField";
+import { useEffect, useState } from "react";
+import { NewLoad } from "../NewLoad";
 
 interface State extends SnackbarOrigin {
   open: boolean;
@@ -38,9 +38,13 @@ function Dashboard() {
     horizontal: "center",
   });
 
+  const [loadAction, setLoadAction] = useState(LoadActionEnum.NEW_LOAD);
+  const [loadRequest, setLoadRequest] = useState();
+
   const { vertical, horizontal, open: openNewLoadAlert } = stateNewLoad;
 
-  const handleOpen = () => {
+  const handleNewLoad = () => {
+    setLoadAction(LoadActionEnum.NEW_LOAD)
     setOpen(true);
   };
   const handleClose = () => {
@@ -96,6 +100,12 @@ function Dashboard() {
     }
   };
 
+  const onEditLoadEvent = (row: any) => {
+    setLoadAction(LoadActionEnum.UPDATE_LOAD);
+    setLoadRequest(row);
+    setOpen(true);
+  }
+
   const columns: ColumnConfig[] = [
     {
       width: 30,
@@ -143,14 +153,14 @@ function Dashboard() {
           fullWidth
           sx={{ maxWidth: 400 }}
         />
-        <Button onClick={handleOpen}>Add New</Button>
+        <Button onClick={handleNewLoad}>Add New</Button>
         <Modal
           open={open}
           onClose={handleClose}
           aria-labelledby="parent-modal-title"
           aria-describedby="parent-modal-description"
         >
-          <NewLoad handleNewLoadEvt={onHandleNewLoadEvt} />
+          <NewLoad handleSaveChangesEvt={onHandleNewLoadEvt} loadAction={loadAction} loadRequest={loadRequest}/>
         </Modal>
       </Box>
 
@@ -160,6 +170,8 @@ function Dashboard() {
         totalPages={totalPages}
         filterFn={filterFn}
         changePageEvent={onChangePageEvent}
+        editRowEvent={onEditLoadEvent}
+  
       />
 
       {/* */}
@@ -176,7 +188,7 @@ function Dashboard() {
           variant="filled"
           sx={{ width: "100%" }}
         >
-          New Load created!
+          { loadAction === LoadActionEnum.UPDATE_LOAD ? 'Saved Changes!!' : 'New Load created!' }
         </Alert>
       </Snackbar>
     </Box>

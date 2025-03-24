@@ -18,6 +18,9 @@ import TableHead from "@mui/material/TableHead";
 import { ColumnConfig } from "./Column.model";
 import { useEffect, useState } from "react";
 import TableSortLabel from "@mui/material/TableSortLabel";
+import Tooltip from "@mui/material/Tooltip";
+import EditIcon from '@mui/icons-material/Edit';
+
 
 interface TablePaginationActionsProps {
   count: number;
@@ -125,6 +128,7 @@ interface TableProps {
   totalPages: number;
   filterFn: { fn: (items: any[]) => any[] };
   changePageEvent: (pageIndex: number, pageSize: number) => void;
+  editRowEvent?: (row: any) => void;
 }
 
 export default function CustomPaginationActionsTable({
@@ -133,6 +137,7 @@ export default function CustomPaginationActionsTable({
   totalPages,
   changePageEvent,
   filterFn,
+  editRowEvent,
 }: TableProps) {
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -230,11 +235,19 @@ export default function CustomPaginationActionsTable({
                 )}
               </StyledTableCell>
             ))}
+            { editRowEvent && (
+              <StyledTableCell
+                  key={"Action"}
+                  variant="head"
+                  style={{ width: 30 }}
+                  sx={{ backgroundColor: "background.paper" }}
+                ></StyledTableCell>
+            )}
           </TableRow>
         </TableHead>
         <TableBody>
           {filteredRows.map((row) => (
-            <TableRow key={row["id"]}>
+            <StyledTableRow key={row["id"]}>
               {columnData.map((column) => (
                 <TableCell
                   key={column.dataKey}
@@ -243,7 +256,19 @@ export default function CustomPaginationActionsTable({
                   {row[column.dataKey]}
                 </TableCell>
               ))}
-            </TableRow>
+              { editRowEvent && (
+                <TableCell>
+                  <Box sx={{ display: 'flex', gap: '1rem' }}>
+                    <Tooltip title="Edit">
+                      <IconButton onClick={() => editRowEvent(row)}>
+                        <EditIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
+                </TableCell>
+              )}
+              
+            </StyledTableRow>
           ))}
           {emptyRows > 0 && (
             <TableRow style={{ height: 53 * emptyRows }}>
