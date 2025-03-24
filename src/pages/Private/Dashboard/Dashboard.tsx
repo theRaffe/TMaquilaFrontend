@@ -8,6 +8,12 @@ import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
 import { NewLoad } from "../NewLoad";
 import { PostNewLoadResponse } from "@/models";
+import Snackbar, { SnackbarOrigin } from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
+
+interface State extends SnackbarOrigin {
+  open: boolean;
+}
 
 function Dashboard() {
   interface PaginationState {
@@ -26,6 +32,14 @@ function Dashboard() {
     },
   });
   const [open, setOpen] = useState(false);
+  const [stateNewLoad, setStateNewLoad] = useState<State>({
+    open: false,
+    vertical: "top",
+    horizontal: "center",
+  });
+
+  const { vertical, horizontal, open: openNewLoadAlert } = stateNewLoad;
+
   const handleOpen = () => {
     setOpen(true);
   };
@@ -70,11 +84,17 @@ function Dashboard() {
     });
   };
 
+  /**
+   * Handler of NewLoad Modal's submit button
+   *
+   * @param response response of create new Load API
+   */
   const onHandleNewLoadEvt = (response: PostNewLoadResponse) => {
     if (response.success) {
       setOpen(false);
+      setStateNewLoad({ ...stateNewLoad, open: true });
     }
-  }
+  };
 
   const columns: ColumnConfig[] = [
     {
@@ -129,7 +149,7 @@ function Dashboard() {
           aria-labelledby="parent-modal-title"
           aria-describedby="parent-modal-description"
         >
-          <NewLoad handleNewLoadEvt={onHandleNewLoadEvt}/>
+          <NewLoad handleNewLoadEvt={onHandleNewLoadEvt} />
         </Modal>
       </Box>
 
@@ -140,6 +160,24 @@ function Dashboard() {
         filterFn={filterFn}
         changePageEvent={onChangePageEvent}
       />
+
+      {/* */}
+      <Snackbar
+        anchorOrigin={{ vertical, horizontal }}
+        open={openNewLoadAlert}
+        key={"successNewLoad"}
+        autoHideDuration={5000}
+        onClose={() => setStateNewLoad({ ...stateNewLoad, open: false })}
+      >
+        <Alert
+          onClose={() => setStateNewLoad({ ...stateNewLoad, open: false })}
+          severity="success"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          New Load created!
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }
