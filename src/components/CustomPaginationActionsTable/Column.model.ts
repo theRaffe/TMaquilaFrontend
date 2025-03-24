@@ -3,4 +3,5 @@ export interface ColumnConfig {
   label: string;
   numeric?: boolean;
   width?: number;
+  disableSorting?: boolean;
 }

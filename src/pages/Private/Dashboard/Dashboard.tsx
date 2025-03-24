@@ -99,8 +99,9 @@ function Dashboard() {
   const columns: ColumnConfig[] = [
     {
       width: 30,
-      label: "Id Row",
+      label: "Id",
       dataKey: "id",
+      disableSorting: true
     },
     {
       width: 100,
